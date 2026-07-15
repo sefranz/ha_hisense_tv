@@ -8,7 +8,7 @@ import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.components import mqtt
 from homeassistant.const import CONF_IP_ADDRESS, CONF_MAC, CONF_NAME, CONF_PIN
-from homeassistant.data_entry_flow import FlowResult
+from homeassistant.config_entries import ConfigFlowResult
 
 from .const import (
     CONF_MQTT_IN,
@@ -75,7 +75,7 @@ class HisenseTvFlow(config_entries.ConfigFlow, domain=DOMAIN):
             self._unsubscribe_sourcelist()
             self._unsubscribe_sourcelist = None
 
-    async def async_step_user(self, user_input=None) -> FlowResult:
+    async def async_step_user(self, user_input=None) -> ConfigFlowResult:
         if self.task_auth is True:
             _LOGGER.debug("async_step_user - task_auth is True")
             return self.async_show_progress_done(next_step_id="finish")
@@ -129,15 +129,13 @@ class HisenseTvFlow(config_entries.ConfigFlow, domain=DOMAIN):
             % (self.task_mqtt.get(CONF_MQTT_IN), client_id),
             msg_callback=self._async_pin_not_needed,
         )
-        _LOGGER.debug("_check_authentication - publish gettvstate")
-        mqtt.publish(
+        await mqtt.async_publish(
             hass=self.hass,
             topic="%s/remoteapp/tv/ui_service/%s/actions/gettvstate"
             % (self.task_mqtt.get(CONF_MQTT_OUT), client_id),
             payload="",
         )
-        _LOGGER.debug("_check_authentication - publish sourcelist")
-        mqtt.publish(
+        await mqtt.async_publish(
             hass=self.hass,
             topic="%s/remoteapp/tv/ui_service/%s/actions/sourcelist"
             % (self.task_mqtt.get(CONF_MQTT_OUT), client_id),
@@ -181,7 +179,7 @@ class HisenseTvFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 msg_callback=self._async_authcode_response,
             )
             payload = json.dumps({"authNum": user_input.get(CONF_PIN)})
-            mqtt.publish(
+            await mqtt.async_publish(
                 hass=self.hass,
                 topic="%s/remoteapp/tv/ui_service/%s/actions/authenticationcode"
                 % (self.task_mqtt.get(CONF_MQTT_OUT), client_id),

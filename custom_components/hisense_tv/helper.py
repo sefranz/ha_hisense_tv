@@ -3,7 +3,6 @@ import asyncio
 import logging
 
 from homeassistant.components import mqtt
-from homeassistant.const import MAJOR_VERSION, MINOR_VERSION
 
 from .const import DEFAULT_CLIENT_ID
 
@@ -48,11 +47,7 @@ class HisenseTvBase(object):
         self._mac = mac
         self._ip_address = ip_address
         self._unique_id = uid
-        self._icon = (
-            "mdi:television-clean"
-            if MAJOR_VERSION <= 2021 and MINOR_VERSION < 11
-            else "mdi:television-shimmer"
-        )
+        self._icon = "mdi:television-shimmer"
         self._subscriptions = {
             "tvsleep": lambda: None,
             "state": lambda: None,

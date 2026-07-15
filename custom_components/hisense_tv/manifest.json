@@ -1,8 +1,8 @@
 {
   "domain": "hisense_tv",
   "name": "Hisense TV MQTT Bridge",
-  "version": "22.05.10",
-  "documentation": "https://github.com/sehaas/ha_hisense_tv",
+  "version": "2025.1.0",
+  "documentation": "https://github.com/sefranz/ha_hisense_tv",
   "dependencies": [
     "mqtt"
   ],
@@ -12,5 +12,6 @@
   "requirements": [
     "wakeonlan==2.0.1"
   ],
-  "config_flow": true
+  "config_flow": true,
+  "iot_class": "local_push"
 }
